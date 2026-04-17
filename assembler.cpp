@@ -4,12 +4,12 @@
 #include <vector>
 #include <sstream>
 #include <unordered_map>
-#include "cpu.h"
+#include "isa.h"
 
 int main()
 {
     std::unordered_map<std::string, uint16_t> opcodes = {
-        {"HALT", OP_HALT}, {"LDI", OP_LDI}, {"ADD", OP_ADD}};
+        {"HALT", ISA::OP_NOOP}, {"LDI", ISA::OP_LDI}, {"ADD", ISA::OP_ADD}};
     std::unordered_map<std::string, uint16_t> regs = {
         {"R1", 1}, {"R2", 2}, {"R3", 3}};
 
