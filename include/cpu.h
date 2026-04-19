@@ -1,4 +1,5 @@
 #pragma once
+#include "clock.h"
 #include "ISA.h"
 #include "memory.h"
 #include "alu.h"
@@ -8,9 +9,10 @@
 
 class CPU {
 	public:
-		CPU(MemoryManager& mem, ALU& alu):
+		CPU(MemoryManager& mem, ALU& alu, Clock& clock):
 			m_MemoryManager(mem), 
-      m_ALU(alu) {
+      m_ALU(alu),
+			m_Clock(clock) {
 				Reset();
 			}
 		void Reset() {
@@ -23,6 +25,7 @@ class CPU {
 	private:
 		MemoryManager& m_MemoryManager;
 		ALU& m_ALU;
+		Clock& m_Clock;
 		std::array<uint16_t, ISA::Registers::REG_COUNT> m_Registers;
 		std::array<uint16_t, ISA::Flags::FLAG_COUNT> m_Flags;
 };
