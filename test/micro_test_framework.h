@@ -9,7 +9,7 @@
 // The runner then proceeds to the next set of suites
 
 
-// The test assert should print an error - vibed
+// The test assert should print an red error if wrong - vibed
 #define test_assert(condition) \
     if (!(condition)) { \
         std::cout << "\n      \033[31m[FAIL]\033[0m " << #condition << " (Line: " << __LINE__ << ")"; \
@@ -26,9 +26,7 @@ class TestSuite {
     void executeTest(std::string testName, std::function<void()> testFunc) {
         m_currentTestFailed = false; // Reset for this specific test
         std::cout << "  -> " << testName << "... ";
-        
         testFunc(); // Run the actual test code
-
         if (m_currentTestFailed) {
             std::cout << "\n"; 
 				} else {

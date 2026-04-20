@@ -10,6 +10,7 @@ CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
 all: build test
 
 build: $(SRC)
+	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
 
 test: $(ALL_FILES)

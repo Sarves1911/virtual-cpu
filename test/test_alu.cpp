@@ -7,7 +7,8 @@ class TestALUSuite: public TestSuite {
 	
 	public:	
 		void runTests() {
-			executeTest("testAdd_Basic", [this]{this->testAdd_Basic(); });
+			executeTest("testAdd_Basic", [this]{this->testAdd_Basic();});
+			executeTest("testSub_Basic", [this]{this->testSub_Basic();});
 		}
 		void onMount() {
 			std::cout << "\n[SUITE] Test ALU Begin\n";
@@ -21,5 +22,11 @@ class TestALUSuite: public TestSuite {
 			ALUResult result = alu.execute(ISA::Opcode::OP_ADD, 0, 67);
 			test_assert(result.value == 67);
 		};
+
+		void testSub_Basic() {
+			ALU alu;
+			ALUResult result = alu.execute(ISA::OP_SUB, 42, 10);
+			test_assert(result.value == 32);
+		}
 };
 
