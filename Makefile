@@ -7,7 +7,11 @@ SRC      = $(wildcard src/*.cpp)
 TEST_SRC = $(wildcard test/*.cpp)
 CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
 
-all: build test
+FORMATTER = clang-format
+FORMAT_FLAGS = -i -style=file
+
+
+all: build test format
 
 build: $(SRC)
 	@mkdir -p build
@@ -18,8 +22,11 @@ test: $(ALL_FILES)
 	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(CORE_LOGIC) $(TEST_SRC)
 	@./$(TEST_TARGET)
 
+format:
+	find . -iname "*.cpp" -o -iname "*.hpp" -o -iname "*.c" -o -iname "*.h" | xargs $(FORMATTER) $(FORMAT_FLAGS)
+
 clean:
 	rm -f $(TARGET)
 	rm -r $(TEST_TARGET)
 
-.PHONY: build test clean all
+.PHONY: build test clean all format
