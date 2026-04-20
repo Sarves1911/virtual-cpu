@@ -1,16 +1,16 @@
+#include "micro_test_framework.h"
+#include <memory>
+#include <vector>
 
-class TestSuite {
-	public: 
-		void runTests() {
-		}
-};
+void TestRunner::addSuite(std::unique_ptr<TestSuite> suite){
+	m_suites.push_back(std::move(suite));
+}
 
+void TestRunner::runTests(){
+	for (auto& suite: m_suites) {
+		suite->onMount();
+		suite->runTests();
+		suite->onDismount();
+	}
+}
 
-class TestRunner {
-	public:
-		void mount(TestSuite& testSuite);
-		void unmount();
-		void runTests();
-	private:
-		TestSuite* m_testSuite;
-};

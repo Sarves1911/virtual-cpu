@@ -1,17 +1,21 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -I include
 TARGET = build/virtual-cpu
-SRC = src/main.cpp
-TEST_SRC = test/test_main.cpp
 TEST_TARGET = build/virtual-cpu-tests
+
+SRC      = $(wildcard src/*.cpp)
+TEST_SRC = $(wildcard test/*.cpp)
+CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
 
 all: build test
 
 build: $(SRC)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
 
-test: $(TEST_SRC)
-	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(TEST_SRC) && ./$(TEST_TARGET)
+test: $(ALL_FILES)
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(CORE_LOGIC) $(TEST_SRC)
+	@./$(TEST_TARGET)
 
 clean:
 	rm -f $(TARGET)
