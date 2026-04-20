@@ -5,6 +5,10 @@
 - execute `bear -- make all` should resolve 
     - `compile_commands.json` will be produced that clangd can use for linting.
 
+## Formatting
+- format the entire project directory
+- execute `make format`
+
 ## building
 - builds the actual virtual cpu binary
 - execute `make build`
