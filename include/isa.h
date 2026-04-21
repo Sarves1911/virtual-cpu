@@ -94,7 +94,14 @@ enum Opcode {
 
   // Jump conditionally if the zero flag is equal to 1
   // [1000] [1 flag bit] [000] [8 bit immediate]
-  OP_JZ = 0x8
+  OP_JZ = 0x8,
+
+  // [1001] [0000 0000 0000]
+  OP_HALT = 0x9,
+
+  // [1010] [0000] [4 bit source reg] [0000]
+  OP_PRINT = 0xA,  
+  
 };
 
 }; // namespace ISA
