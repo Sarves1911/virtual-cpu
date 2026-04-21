@@ -1,5 +1,5 @@
 #pragma once
-#include "ISA.h"
+#include "isa.h"
 #include "alu.h"
 #include "clock.h"
 #include "memory.h"

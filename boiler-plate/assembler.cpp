@@ -1,4 +1,4 @@
-#include "isa.h"
+#include "../include/isa.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -10,14 +10,30 @@ int main(int argc, char* argv[]) {
 
     // Map readable instruction names to their binary opcodes defined in isa.h
     std::unordered_map<std::string, uint16_t> opcodes = {
-        {"HALT", ISA::OP_NOOP},
+        {"HALT", ISA::OP_HALT},
         {"LDI",  ISA::OP_LDI},
-        {"ADD",  ISA::OP_ADD}
+        {"ADD",  ISA::OP_ADD},
+        {"PRINT",ISA::OP_PRINT}
     };
 
     // Map register names to their numeric index (R1=1, R2=2, R3=3)
     std::unordered_map<std::string, uint16_t> regs = {
-        {"R1", 1}, {"R2", 2}, {"R3", 3}
+        {"R0",  ISA::Registers::R0},
+        {"R1",  ISA::Registers::R1},
+        {"R2",  ISA::Registers::R2},
+        {"R3",  ISA::Registers::R3},
+        {"R4",  ISA::Registers::R4},
+        {"R5",  ISA::Registers::R5},
+        {"R6",  ISA::Registers::R6},
+        {"R7",  ISA::Registers::R7},
+        {"R8",  ISA::Registers::R8},
+        {"R9",  ISA::Registers::R9},
+        {"R10", ISA::Registers::R10},
+        {"R11", ISA::Registers::R11},
+        {"R12", ISA::Registers::R12},
+        {"R13", ISA::Registers::R13},
+        {"R14", ISA::Registers::R14},
+        {"R15", ISA::Registers::R15},
     };
 
     // Require one argument: the .asm filename
