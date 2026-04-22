@@ -69,6 +69,3 @@ Testing/
 .cache/
 
 .vscode/.DS_Store
-.DS_Store
-.vscode/c_cpp_properties.json
-.vscode/settings.json
