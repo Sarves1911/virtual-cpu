@@ -15,8 +15,7 @@ int main(int argc, char* argv[]) {
         {"ADD",  ISA::OP_ADD},
         {"PRINT",ISA::OP_PRINT},
         {"SUB",  ISA::OP_SUB},
-        {"JMP",  ISA::OP_JMP},
-        {"JZ",   ISA::OP_JZ},
+        {"JMP",  ISA::OP_JMP}
     };
 
     // Map register names to their numeric index (R1=1, R2=2, R3=3)
@@ -95,9 +94,10 @@ int main(int argc, char* argv[]) {
             instr = (op << 12) | (src << 8);
 
         } else if (tokens[0] == "JZ") {
-            // [Opcode:4][0000][Immediate:8]    
-            uint16_t addr = std::stoi(tokens[1]); 
-            instr = (op << 12) | (addr & 0xFF);
+            // [Opcode:4][Src:4][Immediate:8]
+            uint16_t src = regs[tokens[1]];       
+            uint16_t addr = std::stoi(tokens[2]); 
+            instr = (op << 12) | (src << 8) | (addr & 0xFF);
 
         } else if (tokens[0] == "SUB") {
             // [Opcode:4][Dest:4][Src1:4][Src2:4]
@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
             // [Opcode:4][0000][8 bit immediate address]
             uint16_t addr = std::stoi(tokens[1]);
             instr = (op << 12) | (addr & 0xFF);
-
+            
         }else if (tokens[0] == "HALT") {
             // Halt: encodes as all zeros
             instr = (op << 12);
