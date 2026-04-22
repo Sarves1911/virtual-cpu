@@ -20,6 +20,7 @@ public:
     m_Registers[ISA::IR] = 0;
   }
   void cycle();
+  void printState();
 
 private:
   MemoryManager &m_MemoryManager;

@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #include "isa.h"
 #include <array>
 #include <cassert>
