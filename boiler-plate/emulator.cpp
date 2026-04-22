@@ -7,6 +7,7 @@ uint16_t memory[4096] = {0};
 uint16_t registers[16] = {0};
 uint16_t PC = 0;
 bool isHalted = false;
+bool zero_flag = false;
 
 // Helper to slice bits
 uint16_t extractBits(uint16_t instr, int pos, int len) {
@@ -42,22 +43,52 @@ int main() {
 
     // EXECUTE
     switch (opcode) {
-    case OP_LDI: {
+    case ISA::OP_LDI: {
       uint16_t imm = extractBits(instr, 0, 8);
       registers[dest] = imm;
       break;
     }
-    case OP_ADD: {
+    case ISA::OP_ADD: {
       uint16_t src1 = extractBits(instr, 4, 4);
       uint16_t src2 = extractBits(instr, 0, 4);
       registers[dest] = registers[src1] + registers[src2];
+      zero_flag = (registers[dest] == 0);
       break;
     }
-    case OP_HALT: {
+    case ISA::OP_SUB: {
+      uint16_t src1 = extractBits(instr, 4, 4);
+      uint16_t src2 = extractBits(instr, 0, 4);
+      registers[dest] = registers[src1] - registers[src2];
+      zero_flag = (registers[dest] == 0);
+      break;
+    }
+    case ISA::OP_HALT: {
       isHalted = true;
       break;
     }
+    case ISA::OP_NOOP: {
+      isHalted = true;
+      break;
+    }
+    case ISA::OP_PRINT: {
+      uint16_t src = extractBits(instr, 8, 4);
+      std::cout << (char)registers[src];
+      break;
+    }
+      case ISA::OP_JZ: {
+      uint16_t addr = extractBits(instr, 0, 8);
+      if (zero_flag) {
+          PC = addr;
+      }
+      break;
+    }
+      case ISA::OP_JMP: {
+      uint16_t addr = extractBits(instr, 0, 8);
+      PC = addr;
+      break;
+    }
     default:
+    std::cerr << "Unknown opcode: " << opcode << " at PC: " << (PC - 1) << std::endl;
       isHalted = true;
       break;
     }
@@ -68,7 +99,7 @@ int main() {
   std::cout << "[Core Dump]" << std::endl;
   std::cout << "R1: " << registers[1] << std::endl;
   std::cout << "R2: " << registers[2] << std::endl;
-  std::cout << "R3: " << registers[3] << " 67 hehe" << std::endl;
+  std::cout << "R3: " << registers[3] << std::endl;
 
   return 0;
 }
