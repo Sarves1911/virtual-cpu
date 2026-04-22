@@ -13,7 +13,10 @@ int main(int argc, char* argv[]) {
         {"HALT", ISA::OP_HALT},
         {"LDI",  ISA::OP_LDI},
         {"ADD",  ISA::OP_ADD},
-        {"PRINT",ISA::OP_PRINT}
+        {"PRINT",ISA::OP_PRINT},
+        {"SUB",  ISA::OP_SUB},
+        {"JMP",  ISA::OP_JMP},
+        {"JZ",   ISA::OP_JZ}
     };
 
     // Map register names to their numeric index (R1=1, R2=2, R3=3)
@@ -86,9 +89,31 @@ int main(int argc, char* argv[]) {
             uint16_t src2 = regs[tokens[3]];
             instr = (op << 12) | (dest << 8) | (src1 << 4) | (src2);
 
-        } else if (tokens[0] == "HALT") {
+        } else if (tokens[0] == "PRINT") {
+            // [Opcode:4][Src:4][0000][0000]
+            uint16_t src = regs[tokens[1]];
+            instr = (op << 12) | (src << 8);
+
+        } else if (tokens[0] == "JZ") {
+            // [Opcode:4][Src:4][Immediate:8]    
+            uint16_t addr = std::stoi(tokens[1]); 
+            instr = (op << 12) | (addr & 0xFF);
+
+        } else if (tokens[0] == "SUB") {
+            // [Opcode:4][Dest:4][Src1:4][Src2:4]
+            uint16_t dest = regs[tokens[1]];
+            uint16_t src1 = regs[tokens[2]];
+            uint16_t src2 = regs[tokens[3]];
+            instr = (op << 12) | (dest << 8) | (src1 << 4) | src2;
+            
+        } else if (tokens[0] == "JMP") {
+            // [Opcode:4][0000][8 bit immediate address]
+            uint16_t addr = std::stoi(tokens[1]);
+            instr = (op << 12) | (addr & 0xFF);
+            
+        }else if (tokens[0] == "HALT") {
             // Halt: encodes as all zeros
-            instr = 0x0000;
+            instr = (op << 12);
         }
 
         // Write the 16-bit instruction to the binary file
@@ -99,3 +124,4 @@ int main(int argc, char* argv[]) {
               << " to machine_code.bin" << std::endl;
     return 0;
 }
+
