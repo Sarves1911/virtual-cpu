@@ -92,8 +92,8 @@ enum Opcode {
   // [0111] [0000] [8 bit immediate]
   OP_JMP = 0x7,
 
-// Jump conditionally if the specified register equals 0
-// [1000] [4 bit source reg] [8 bit immediate address]
+// Jump conditionally
+// [1000] [0000] [8 bit immediate address]
   OP_JZ = 0x8,
 
   //To stop the CPU entirely
