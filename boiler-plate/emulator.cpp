@@ -75,20 +75,21 @@ int main() {
       std::cout << (char)registers[src];
       break;
     }
-      case ISA::OP_JZ: {
+    case ISA::OP_JZ: {
       uint16_t addr = extractBits(instr, 0, 8);
       if (zero_flag) {
-          PC = addr;
+        PC = addr;
       }
       break;
     }
-      case ISA::OP_JMP: {
+    case ISA::OP_JMP: {
       uint16_t addr = extractBits(instr, 0, 8);
       PC = addr;
       break;
     }
     default:
-    std::cerr << "Unknown opcode: " << opcode << " at PC: " << (PC - 1) << std::endl;
+      std::cerr << "Unknown opcode: " << opcode << " at PC: " << (PC - 1)
+                << std::endl;
       isHalted = true;
       break;
     }

@@ -100,8 +100,8 @@ enum Opcode {
   OP_HALT = 0x9,
 
   // [1010] [0000] [4 bit source reg] [0000]
-  OP_PRINT = 0xA,  
-  
+  OP_PRINT = 0xA,
+
 };
 
 }; // namespace ISA

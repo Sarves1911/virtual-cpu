@@ -1,7 +1,7 @@
 #pragma once
-#include "isa.h"
 #include "alu.h"
 #include "clock.h"
+#include "isa.h"
 #include "memory.h"
 #include <array>
 #include <cstdint>
@@ -28,7 +28,7 @@ private:
   Clock &m_Clock;
   std::array<uint16_t, ISA::REG_COUNT> m_Registers;
   std::array<uint16_t, ISA::FLAG_COUNT> m_Flags;
-  
+
   void fetchNextInst();
   void executeCurrentInst();
 };
