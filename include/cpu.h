@@ -9,6 +9,7 @@
 
 class CPU {
 public:
+  bool isHalted = false;
   CPU(MemoryManager &mem, ALU &alu, Clock &clock)
       : m_MemoryManager(mem), m_ALU(alu), m_Clock(clock) {
     Reset();

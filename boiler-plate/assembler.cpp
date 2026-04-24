@@ -6,96 +6,109 @@
 #include <unordered_map>
 #include <vector>
 
+// Helper to completely strip comments off the end of a line
+std::string cleanLine(std::string line) {
+    size_t commentPos = line.find("//");
+    if (commentPos != std::string::npos) {
+        line = line.substr(0, commentPos);
+    }
+    return line;
+}
+
 int main(int argc, char* argv[]) {
-
-    // Map readable instruction names to their binary opcodes defined in isa.h
-    std::unordered_map<std::string, uint16_t> opcodes = {
-        {"HALT", ISA::OP_HALT},
-        {"LDI",  ISA::OP_LDI},
-        {"ADD",  ISA::OP_ADD},
-        {"PRINT",ISA::OP_PRINT}
-    };
-
-    // Map register names to their numeric index (R1=1, R2=2, R3=3)
-    std::unordered_map<std::string, uint16_t> regs = {
-        {"R0",  ISA::Registers::R0},
-        {"R1",  ISA::Registers::R1},
-        {"R2",  ISA::Registers::R2},
-        {"R3",  ISA::Registers::R3},
-        {"R4",  ISA::Registers::R4},
-        {"R5",  ISA::Registers::R5},
-        {"R6",  ISA::Registers::R6},
-        {"R7",  ISA::Registers::R7},
-        {"R8",  ISA::Registers::R8},
-        {"R9",  ISA::Registers::R9},
-        {"R10", ISA::Registers::R10},
-        {"R11", ISA::Registers::R11},
-        {"R12", ISA::Registers::R12},
-        {"R13", ISA::Registers::R13},
-        {"R14", ISA::Registers::R14},
-        {"R15", ISA::Registers::R15},
-    };
-
-    // Require one argument: the .asm filename
     if (argc < 2) {
         std::cerr << "Usage: assembler <filename.asm>" << std::endl;
         return 1;
     }
 
-    // Open the .asm source file passed in via command line (e.g. fibonacci.asm)
+    std::unordered_map<std::string, uint16_t> opcodes = {
+        {"NOOP", ISA::OP_NOOP}, {"LDI", ISA::OP_LDI}, {"MOV", ISA::OP_MOV},
+        {"ADD", ISA::OP_ADD}, {"SUB", ISA::OP_SUB}, {"LOAD", ISA::OP_LOAD},
+        {"STORE", ISA::OP_STORE}, {"JMP", ISA::OP_JMP}, {"JZ", ISA::OP_JZ},
+        {"HALT", ISA::OP_HALT}, {"PRINT", ISA::OP_PRINT}
+    };
+
+    std::unordered_map<std::string, uint16_t> regs;
+    for(int i = 0; i < 16; i++) regs["R" + std::to_string(i)] = i;
+
+    std::unordered_map<std::string, uint16_t> labels;
+    std::vector<std::vector<std::string>> parsedLines;
+
     std::ifstream infile(argv[1]);
     if (!infile) {
-        std::cerr << "FATAL ERROR: Could not open '" << argv[1] << "'!" << std::endl;
-        return 1; // Kill the program
+        std::cerr << "FATAL ERROR: Could not open '" << argv[1] << "'!\n";
+        return 1;
     }
 
-    // Output file: always writes to machine_code.bin in binary mode
-    std::ofstream outfile("machine_code.bin", std::ios::binary);
     std::string line;
+    uint16_t addressCounter = 0;
 
-    // Read the .asm file one line at a time
+    // --- PASS 1: Find Labels & Clean Data ---
     while (std::getline(infile, line)) {
-
-        if (line.empty() || line[0] == '/')
-            continue;// Skip empty / comments
-
-        // Tokenize the line by whitespace into individual parts
+        line = cleanLine(line); // Safely remove comments
         std::stringstream ss(line);
         std::string token;
         std::vector<std::string> tokens;
-        while (ss >> token) {
-            // Stop collecting tokens if we hit an inline comment
-            if (token == "//") break;
-            tokens.push_back(token);
+        
+        while (ss >> token) tokens.push_back(token);
+        if (tokens.empty()) continue; // Skip blank lines
+
+        // If the token ends with a colon, save its memory address
+        if (tokens[0].back() == ':') {
+            std::string labelName = tokens[0].substr(0, tokens[0].size() - 1);
+            labels[labelName] = addressCounter;
+            tokens.erase(tokens.begin()); // Remove label so the instruction remains
         }
 
-        // Start with a blank 16-bit instruction
+        // If there's still an instruction on this line, save it for Pass 2
+        if (!tokens.empty()) {
+            parsedLines.push_back(tokens);
+            addressCounter++;
+        }
+    }
+
+    // --- PASS 2: Generate Machine Code ---
+    std::ofstream outfile("machine_code.bin", std::ios::binary);
+    uint16_t instructionsWritten = 0;
+
+    for (const auto& tokens : parsedLines) {
         uint16_t instr = 0x0000;
-        uint16_t op = opcodes[tokens[0]]; 
+        uint16_t op = opcodes[tokens[0]];
 
         if (tokens[0] == "LDI") {
-            // [Opcode:4][Dest:4][Immediate:8]
             uint16_t dest = regs[tokens[1]];
-            uint16_t imm  = std::stoi(tokens[2]);
+            uint16_t imm = std::stoi(tokens[2]);
             instr = (op << 12) | (dest << 8) | (imm & 0xFF);
-
-        } else if (tokens[0] == "ADD") {
-            // [Opcode:4][Dest:4][Src1:4][Src2:4]
+        } else if (tokens[0] == "ADD" || tokens[0] == "SUB") {
             uint16_t dest = regs[tokens[1]];
             uint16_t src1 = regs[tokens[2]];
             uint16_t src2 = regs[tokens[3]];
-            instr = (op << 12) | (dest << 8) | (src1 << 4) | (src2);
-
-        } else if (tokens[0] == "HALT") {
-            // Halt: encodes as all zeros
-            instr = 0x0000;
+            instr = (op << 12) | (dest << 8) | (src1 << 4) | src2;
+        } else if (tokens[0] == "MOV") {
+            uint16_t dest = regs[tokens[1]];
+            uint16_t src = regs[tokens[2]];
+            instr = (op << 12) | (dest << 8) | (src << 4);
+        } else if (tokens[0] == "PRINT") {
+            uint16_t src = regs[tokens[1]];
+            instr = (op << 12) | (src << 8);
+        } else if (tokens[0] == "JMP" || tokens[0] == "JZ") {
+            uint16_t addr;
+            // Check if the jump target is a Label (like "LOOP_START") or a hardcoded number
+            if (labels.count(tokens[1])) {
+                addr = labels[tokens[1]]; 
+            } else {
+                addr = std::stoi(tokens[1]);
+            }
+            instr = (op << 12) | (addr & 0xFF);
+        } else if (tokens[0] == "HALT" || tokens[0] == "NOOP") {
+            instr = (op << 12);
         }
 
-        // Write the 16-bit instruction to the binary file
         outfile.write(reinterpret_cast<const char*>(&instr), sizeof(instr));
+        instructionsWritten++;
     }
 
-    std::cout << "Assembler: Successfully compiled " << argv[1]
-              << " to machine_code.bin" << std::endl;
+    std::cout << "Assembler: Successfully compiled " << argv[1] 
+              << " (" << instructionsWritten << " instructions) to machine_code.bin\n";
     return 0;
 }

@@ -15,7 +15,7 @@ public:
   }
 
 private:
-  std::array<uint16_t, ISA::MAX_MEM_SIZE> _Data;
+  std::array<uint16_t, ISA::MAX_MEM_SIZE> _Data = {0};
 
   // This is needed because we decided that MAX_MEM_SIZE was gonna be 2^8
   // instead of a full 2^16 for now. This will slow down read / write but I

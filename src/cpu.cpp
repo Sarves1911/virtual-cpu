@@ -108,14 +108,19 @@ void CPU::executeCurrentInst() {
         }
         // --- SYSTEM CONTROL ---
         case ISA::OP_HALT: {
-            // Format: [1001] [0000 0000 0000]
-            std::cout << "CPU EXECUTED HALT INSTRUCTION." << std::endl;
-            // Trap the CPU in an infinite loop at the current PC to simulate stopping
+            isHalted = true;
             m_Registers[ISA::PC]--; 
             break;
         }
         case ISA::OP_NOOP: {
             // Do nothing, just let the PC advance
+            break;
+        }
+        case ISA::OP_PRINT: {
+            // Your assembler puts the source register in bits 8-11
+            uint16_t srcReg = extractBits(instr, 8, 4);
+            // Cast the raw number to an ASCII char and print it
+            std::cout << static_cast<char>(m_Registers[srcReg]) << std::flush;
             break;
         }
         default: {
@@ -127,8 +132,11 @@ void CPU::executeCurrentInst() {
     }
 }
 void CPU::printState() {
+    if (isHalted) return; 
+    
+    // Using \t (tabs) ensures the columns stay aligned even when numbers get large
     std::cout << "PC: 0x" << std::hex << m_Registers[ISA::PC] << std::dec
-              << " | R1 (Counter): " << m_Registers[1] 
-              << " | R2 (Dec): " << m_Registers[2] 
-              << " | Z-Flag: " << m_Flags[ISA::ZERO_FLAG] << std::endl;
+              << "\t| R1: " << m_Registers[1] 
+              << "\t| R2: " << m_Registers[2] 
+              << "\t| Z-Flag: " << m_Flags[ISA::ZERO_FLAG] << "\n";
 }
