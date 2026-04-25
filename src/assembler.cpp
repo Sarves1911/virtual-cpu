@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     std::string token;
     std::vector<std::string> tokens;
 
-   while (ss >> token)
+    while (ss >> token)
       tokens.push_back(token);
     if (tokens.empty())
       continue; // Skip blank lines

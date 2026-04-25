@@ -54,7 +54,10 @@ void CPU::executeCurrentInst() {
     break;
   case ISA::OP_PRINT: {
     uint16_t srcReg = extractBits(instr, 8, 4);
-    std::cout << "\n" << (m_Registers[srcReg]) << "("<<static_cast<char>(m_Registers[srcReg])<<")" << "\n" << std::flush;
+    std::cout << "\n"
+              << (m_Registers[srcReg]) << "("
+              << static_cast<char>(m_Registers[srcReg]) << ")" << "\n"
+              << std::flush;
     break;
   }
   case ISA::OP_HALT:
