@@ -23,111 +23,112 @@ void CPU::fetchNextInst() {
 }
 
 void CPU::executeCurrentInst() {
-  // 1. Grab the instruction we just fetched
   uint16_t instr = m_Registers[ISA::IR];
-
-  // 2. Decode the Opcode (The top 4 bits: index 12, length 4)
   uint16_t opCodeVal = extractBits(instr, 12, 4);
   ISA::Opcode opcode = static_cast<ISA::Opcode>(opCodeVal);
 
-  // 3. Execute based on the ISA definitions
   switch (opcode) {
-
-  // --- MEMORY OPERATIONS ---
-  case ISA::OP_LOAD: {
-    // Format: [0101] [4 bit dest reg] [4 bit source reg] [0000]
-    uint16_t destReg = extractBits(instr, 8, 4);
-    uint16_t sourceReg = extractBits(instr, 4, 4); // Holds the memory address
-
-    uint16_t memAddress = m_Registers[sourceReg];
-    m_Registers[destReg] = m_MemoryManager.read(memAddress);
+  case ISA::OP_LOAD:
+    handle_OP_LOAD(instr);
     break;
-  }
-  case ISA::OP_STORE: {
-    // Format: [0110] [0000] [4 bit source reg (addr)] [4 bit target reg (data)]
-    uint16_t sourceReg = extractBits(instr, 4, 4); // Holds the memory address
-    uint16_t targetReg = extractBits(instr, 0, 4); // Holds the data to write
-
-    uint16_t memAddress = m_Registers[sourceReg];
-    uint16_t dataToStore = m_Registers[targetReg];
-
-    m_MemoryManager.write(memAddress, dataToStore);
+  case ISA::OP_STORE:
+    handle_OP_STORE(instr);
     break;
-  }
-
-  // --- REGISTER LOADING ---
-  case ISA::OP_LDI: {
-    // Format: [0001] [4 bit dest reg] [8 bit immediate]
-    uint16_t destReg = extractBits(instr, 8, 4);
-    uint16_t immVal = extractBits(instr, 0, 8);
-    m_Registers[destReg] = immVal;
+  case ISA::OP_LDI:
+    handle_OP_LDI(instr);
     break;
-  }
-
-  // --- ALU OPERATIONS ---
   case ISA::OP_ADD:
-  case ISA::OP_SUB: {
-    // Format: [Opcode] [4 bit dest] [4 bit src1] [4 bit src2]
-    uint16_t destReg = extractBits(instr, 8, 4);
-    uint16_t src1Reg = extractBits(instr, 4, 4);
-    uint16_t src2Reg = extractBits(instr, 0, 4);
-
-    // Let the ALU object do the heavy lifting
-    ALUResult res =
-        m_ALU.execute(opCodeVal, m_Registers[src1Reg], m_Registers[src2Reg]);
-
-    m_Registers[destReg] = res.value;
-    m_Flags[ISA::ZERO_FLAG] = res.zero;
-    // Add negative flag tracking here once it is added to the enum in isa.h
+    handle_OP_ADD(instr);
     break;
-  }
-  // --- DATA MOVEMENT ---
-  case ISA::OP_MOV: {
-    // Format: [0010] [4 bit dest] [4 bit src] [0000]
-    uint16_t destReg = extractBits(instr, 8, 4);
-    uint16_t srcReg = extractBits(instr, 4, 4);
-    m_Registers[destReg] = m_Registers[srcReg];
+  case ISA::OP_SUB:
+    handle_OP_SUB(instr);
     break;
-  }
-
-  // --- CONTROL FLOW (BRANCHING) ---
-  case ISA::OP_JMP: {
-    // Format: [0111] [0000] [8 bit immediate address]
-    uint16_t jumpAddress = extractBits(instr, 0, 8);
-    m_Registers[ISA::PC] = jumpAddress;
+  case ISA::OP_MOV:
+    handle_OP_MOV(instr);
     break;
-  }
-  case ISA::OP_JZ: {
-    // Format: [1000] [1 flag bit] [000] [8 bit immediate address]
-    uint16_t jumpAddress = extractBits(instr, 0, 8);
-
-    // Only jump if the Zero Flag was set by a previous ALU operation!
-    if (m_Flags[ISA::ZERO_FLAG] == true) {
-      m_Registers[ISA::PC] = jumpAddress;
-    }
+  case ISA::OP_JMP:
+    handle_OP_JMP(instr);
     break;
-  }
-  // --- SYSTEM CONTROL ---
-  case ISA::OP_HALT: {
-    // Format: [1001] [0000 0000 0000]
-    std::cout << "CPU EXECUTED HALT INSTRUCTION." << std::endl;
-    // Trap the CPU in an infinite loop at the current PC to simulate stopping
-    m_Registers[ISA::PC]--;
+  case ISA::OP_JZ:
+    handle_OP_JZ(instr);
     break;
-  }
-  case ISA::OP_NOOP: {
-    // Do nothing, just let the PC advance
+  case ISA::OP_HALT:
+    handle_OP_HALT();
     break;
-  }
-  default: {
+  case ISA::OP_NOOP:
+    break;
+  default:
     std::cout << "HARDWARE FAULT: Unhandled Opcode 0x" << std::hex << opCodeVal
               << std::endl;
-    // Trap the CPU to prevent it from executing garbage memory
     m_Registers[ISA::PC]--;
     break;
   }
+}
+
+void CPU::handle_OP_LOAD(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  uint16_t sourceReg = extractBits(instr, 4, 4);
+  uint16_t memAddress = m_Registers[sourceReg];
+  m_Registers[destReg] = m_MemoryManager.read(memAddress);
+}
+
+void CPU::handle_OP_STORE(uint16_t instr) {
+  uint16_t sourceReg = extractBits(instr, 4, 4);
+  uint16_t targetReg = extractBits(instr, 0, 4);
+  uint16_t memAddress = m_Registers[sourceReg];
+  uint16_t dataToStore = m_Registers[targetReg];
+  m_MemoryManager.write(memAddress, dataToStore);
+}
+
+void CPU::handle_OP_LDI(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  uint16_t immVal = extractBits(instr, 0, 8);
+  m_Registers[destReg] = immVal;
+}
+
+void CPU::handle_OP_ADD(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  uint16_t src1Reg = extractBits(instr, 4, 4);
+  uint16_t src2Reg = extractBits(instr, 0, 4);
+  ALUResult res =
+      m_ALU.execute(ISA::OP_ADD, m_Registers[src1Reg], m_Registers[src2Reg]);
+  m_Registers[destReg] = res.value;
+  m_Flags[ISA::ZERO_FLAG] = res.zero;
+}
+
+void CPU::handle_OP_SUB(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  uint16_t src1Reg = extractBits(instr, 4, 4);
+  uint16_t src2Reg = extractBits(instr, 0, 4);
+  ALUResult res =
+      m_ALU.execute(ISA::OP_SUB, m_Registers[src1Reg], m_Registers[src2Reg]);
+  m_Registers[destReg] = res.value;
+  m_Flags[ISA::ZERO_FLAG] = res.zero;
+}
+
+void CPU::handle_OP_MOV(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  uint16_t srcReg = extractBits(instr, 4, 4);
+  m_Registers[destReg] = m_Registers[srcReg];
+}
+
+void CPU::handle_OP_JMP(uint16_t instr) {
+  uint16_t jumpAddress = extractBits(instr, 0, 8);
+  m_Registers[ISA::PC] = jumpAddress;
+}
+
+void CPU::handle_OP_JZ(uint16_t instr) {
+  uint16_t jumpAddress = extractBits(instr, 0, 8);
+  if (m_Flags[ISA::ZERO_FLAG] == true) {
+    m_Registers[ISA::PC] = jumpAddress;
   }
 }
+
+void CPU::handle_OP_HALT() {
+  std::cout << "CPU EXECUTED HALT INSTRUCTION." << std::endl;
+  m_Registers[ISA::PC]--;
+}
+
 void CPU::printState() {
   std::cout << "PC: 0x" << std::hex << m_Registers[ISA::PC] << std::dec
             << " | R1 (Counter): " << m_Registers[1]
