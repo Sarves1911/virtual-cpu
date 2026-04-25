@@ -52,6 +52,11 @@ void CPU::executeCurrentInst() {
   case ISA::OP_JZ:
     handle_OP_JZ(instr);
     break;
+  case ISA::OP_PRINT: {
+    uint16_t srcReg = extractBits(instr, 8, 4);
+    std::cout << static_cast<char>(m_Registers[srcReg]) << std::flush;
+    break;
+  }
   case ISA::OP_HALT:
     handle_OP_HALT();
     break;
