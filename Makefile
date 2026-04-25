@@ -1,32 +1,27 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -I include
-TARGET = build/virtual-cpu
-TEST_TARGET = build/virtual-cpu-tests
+BUILD_DIR = build
 
-SRC      = $(wildcard src/*.cpp)
-TEST_SRC = $(wildcard test/*.cpp)
-CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
+CPU_TARGET = $(BUILD_DIR)/virtual-cpu
+ASM_TARGET = $(BUILD_DIR)/assembler
 
-FORMATTER = clang-format
-FORMAT_FLAGS = -i -style=file
+# CPU needs these files (but NOT assembler.cpp)
+CPU_SRC = src/alu.cpp src/clock.cpp src/cpu.cpp src/main.cpp src/memory.cpp
 
+# Assembler only needs its own file
+ASM_SRC = src/assembler.cpp
 
-all: build test format
+all: prepare $(CPU_TARGET) $(ASM_TARGET)
 
-build: $(SRC)
-	@mkdir -p build
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+prepare:
+	@mkdir -p $(BUILD_DIR)
 
-test: $(ALL_FILES)
-	@mkdir -p build
-	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(CORE_LOGIC) $(TEST_SRC)
-	@./$(TEST_TARGET)
+$(CPU_TARGET): $(CPU_SRC)
+	$(CXX) $(CXXFLAGS) -o $(CPU_TARGET) $(CPU_SRC)
 
-format:
-	find . -iname "*.cpp" -o -iname "*.hpp" -o -iname "*.c" -o -iname "*.h" | xargs $(FORMATTER) $(FORMAT_FLAGS)
+$(ASM_TARGET): $(ASM_SRC)
+	$(CXX) $(CXXFLAGS) -o $(ASM_TARGET) $(ASM_SRC)
 
 clean:
-	rm -f $(TARGET)
-	rm -r $(TEST_TARGET)
-
-.PHONY: build test clean all format
+	rm -rf $(BUILD_DIR)
+	rm -f machine_code.bin
