@@ -12,6 +12,7 @@ LDI R5 1
 
 LOOP_START:
 ADD R3 R1 R2   // R3 = R1 + R2
+PRINT R3
 MOV R1 R2      // Shift Current
 MOV R2 R3      // Shift Next
 
@@ -20,5 +21,4 @@ JZ END         // If Counter hits 0, Z-Flag flips, jump to END
 JMP LOOP_START // Otherwise, unconditionally jump to loop again
 
 END:
-PRINT R3
 HALT

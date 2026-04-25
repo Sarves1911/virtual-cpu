@@ -39,4 +39,13 @@ clean:
 	rm -rf $(TEST_TARGET)
 	rm -f machine_code.bin
 
+run-fibo: build
+	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET)
+
+run-helloworld: build
+	@./$(ASM_TARGET) ./assembly-files/helloWorld.asm && ./$(TARGET)
+
+run-timer: build
+	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET)
+
 .PHONY: build test clean all format

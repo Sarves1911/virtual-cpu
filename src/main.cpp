@@ -30,7 +30,6 @@ int main() {
   // Increased to 200 cycles to allow longer programs to run
   for (int i = 0; i < 200; i++) {
     cpu.cycle();
-    cpu.printState();
     // Kill switch: Stop the clock if the Instruction Register hits HALT
     // (0x9000)
     if (cpu.registers()[ISA::IR] == 0x9000)

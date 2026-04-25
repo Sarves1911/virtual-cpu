@@ -54,10 +54,13 @@ void CPU::executeCurrentInst() {
     break;
   case ISA::OP_PRINT: {
     uint16_t srcReg = extractBits(instr, 8, 4);
-    std::cout << "\n"
-              << (m_Registers[srcReg]) << "("
-              << static_cast<char>(m_Registers[srcReg]) << ")" << "\n"
-              << std::flush;
+    uint16_t val = m_Registers[srcReg];
+    // Only print the character if it's in the printable range (32-126)
+    if (val >= 32 && val <= 126) {
+        std::cout << val << " ('" << static_cast<char>(val) << "')\n";
+    } else {
+        std::cout << val << " (ctrl char)\n";
+    }
     break;
   }
   case ISA::OP_HALT:
