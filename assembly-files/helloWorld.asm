@@ -26,6 +26,4 @@ LDI R1 100   //load 'd'
 PRINT R1
 LDI R1 33    //load '!'
 PRINT R1
-LDI R1 10    //load a newline
-PRINT R1
 HALT
