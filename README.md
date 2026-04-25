@@ -16,3 +16,7 @@
 ## Testing
 - compiles, builds and run a binary for tests defined in /test
 - execute `make test`
+
+## All
+- do all of the above 
+- execute `make all`
