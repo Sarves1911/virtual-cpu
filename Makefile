@@ -1,27 +1,36 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -I include
-BUILD_DIR = build
+TARGET = build/virtual-cpu
+TEST_TARGET = build/virtual-cpu-tests
+ASM_TARGET = build/assembler
 
-CPU_TARGET = $(BUILD_DIR)/virtual-cpu
-ASM_TARGET = $(BUILD_DIR)/assembler
+# Filter out assembler.cpp from SRC just in case to prevent linker crashes
+SRC      = $(filter-out src/assembler.cpp, $(wildcard src/*.cpp))
+TEST_SRC = $(wildcard test/*.cpp)
+ASM_SRC  = boiler-plate/assembler.cpp
+CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
 
-# CPU needs these files (but NOT assembler.cpp)
-CPU_SRC = src/alu.cpp src/clock.cpp src/cpu.cpp src/main.cpp src/memory.cpp
+FORMATTER = clang-format
+FORMAT_FLAGS = -i -style=file
 
-# Assembler only needs its own file
-ASM_SRC = src/assembler.cpp
+all: build test format
 
-all: prepare $(CPU_TARGET) $(ASM_TARGET)
-
-prepare:
-	@mkdir -p $(BUILD_DIR)
-
-$(CPU_TARGET): $(CPU_SRC)
-	$(CXX) $(CXXFLAGS) -o $(CPU_TARGET) $(CPU_SRC)
-
-$(ASM_TARGET): $(ASM_SRC)
+build: $(SRC)
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
 	$(CXX) $(CXXFLAGS) -o $(ASM_TARGET) $(ASM_SRC)
 
+test: $(ALL_FILES)
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(CORE_LOGIC) $(TEST_SRC)
+	@./$(TEST_TARGET)
+
+format:
+	find . -iname "*.cpp" -o -iname "*.hpp" -o -iname "*.c" -o -iname "*.h" | xargs $(FORMATTER) $(FORMAT_FLAGS)
+
 clean:
-	rm -rf $(BUILD_DIR)
-	rm -f machine_code.bin
+	rm -f $(TARGET)
+	rm -f $(ASM_TARGET)
+	rm -r $(TEST_TARGET)
+
+.PHONY: build test clean all format
