@@ -20,7 +20,7 @@
 - execute `make format`
 
 ### building
-- builds the actual virtual cpu binary
+- builds the actual virtual cpu binary and assembler
 - execute `make build`
 
 ### Testing
