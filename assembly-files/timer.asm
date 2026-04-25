@@ -1,1 +1,6 @@
-#a placeholder for now
+LDI R1 5
+LDI R2 1
+SUB R1 R1 R2
+JZ 5
+JMP 2
+HALT
