@@ -4,18 +4,19 @@
 class TestMemoryManagerSuite : public TestSuite {
 public:
   void runTests() {
-    executeTest("TestReset", [this]{this->testReset();});
-    executeTest("TestWriteRead", [this]{this->testWriteRead();});
-    executeTest("TestWriteReadBoundary", [this]{this->testWriteReadBoundary();});
-    executeTest("TestMultipleWrites", [this]{this->testMultipleWrites();});
-    executeTest("TestOverwriteValue", [this]{this->testOverwriteValue();});
+    executeTest("TestReset", [this] { this->testReset(); });
+    executeTest("TestWriteRead", [this] { this->testWriteRead(); });
+    executeTest("TestWriteReadBoundary",
+                [this] { this->testWriteReadBoundary(); });
+    executeTest("TestMultipleWrites", [this] { this->testMultipleWrites(); });
+    executeTest("TestOverwriteValue", [this] { this->testOverwriteValue(); });
   }
 
   void onMount() { std::cout << "\n[SUITE] Test Memory Begin\n"; }
   void onDismount() { std::cout << "\n[SUITE] Test Memory End\n"; }
 
 private:
-	//Singleton member 
+  // Singleton member
   MemoryManager m_mem;
 
   void testReset() {
