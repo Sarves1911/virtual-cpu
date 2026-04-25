@@ -20,4 +20,5 @@ JZ END         // If Counter hits 0, Z-Flag flips, jump to END
 JMP LOOP_START // Otherwise, unconditionally jump to loop again
 
 END:
+PRINT R3
 HALT

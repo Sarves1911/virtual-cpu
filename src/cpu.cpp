@@ -54,7 +54,7 @@ void CPU::executeCurrentInst() {
     break;
   case ISA::OP_PRINT: {
     uint16_t srcReg = extractBits(instr, 8, 4);
-    std::cout << static_cast<char>(m_Registers[srcReg]) << std::flush;
+    std::cout << "\n" << (m_Registers[srcReg]) << "("<<static_cast<char>(m_Registers[srcReg])<<")" << "\n" << std::flush;
     break;
   }
   case ISA::OP_HALT:
@@ -130,7 +130,7 @@ void CPU::handle_OP_JZ(uint16_t instr) {
 }
 
 void CPU::handle_OP_HALT() {
-  std::cout << "CPU EXECUTED HALT INSTRUCTION." << std::endl;
+  std::cout << "\nCPU EXECUTED HALT INSTRUCTION.\n" << std::endl;
   m_Registers[ISA::PC]--;
 }
 
