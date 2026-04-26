@@ -11,7 +11,7 @@ public:
     executeTest("testSub_Basic", [this] { this->testSub_Basic(); });
   }
   void onMount() { std::cout << "\n[SUITE] Test ALU Begin\n"; }
-  void onDismount() { std::cout << "\n[SUITE] Test ALU End\n"; }
+  void onDismount() { std::cout << "[SUITE] Test ALU End\n"; }
 
 private:
   void testAdd_Basic() {

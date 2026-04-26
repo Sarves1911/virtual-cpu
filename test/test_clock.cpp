@@ -8,7 +8,7 @@ public:
     executeTest("clock ticking", [this] { this->testClockTick(); });
   }
   void onMount() { std::cout << "\n[SUITE] Test Clock Begin\n"; }
-  void onDismount() { std::cout << "\n[SUITE] Test Clock End\n"; }
+  void onDismount() { std::cout << "[SUITE] Test Clock End\n"; }
 
 private:
   // Pretty trivial but test coverage is nice

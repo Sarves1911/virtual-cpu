@@ -13,7 +13,7 @@ public:
   }
 
   void onMount() { std::cout << "\n[SUITE] Test Memory Begin\n"; }
-  void onDismount() { std::cout << "\n[SUITE] Test Memory End\n"; }
+  void onDismount() { std::cout << "[SUITE] Test Memory End\n"; }
 
 private:
   // Singleton member

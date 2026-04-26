@@ -35,7 +35,7 @@ public:
   }
 
   void onMount() { std::cout << "\n[SUITE] Test CPU Begin\n"; }
-  void onDismount() { std::cout << "\n[SUITE] Test CPU End\n"; }
+  void onDismount() { std::cout << "[SUITE] Test CPU End\n"; }
 
 private:
   ALU m_ALU;
