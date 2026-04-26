@@ -22,11 +22,10 @@ public:
   }
   void cycle();
   void printState();
-	void printClockTime();
-	void printFlags();
-	void printSpecialRegisters();
-	void printGeneralRegisters();
-
+  void printClockTime();
+  void printFlags();
+  void printSpecialRegisters();
+  void printGeneralRegisters();
 
   std::array<uint16_t, ISA::REG_COUNT> &registers() { return m_Registers; }
   std::array<uint16_t, ISA::FLAG_COUNT> &flags() { return m_Flags; }

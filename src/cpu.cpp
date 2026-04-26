@@ -1,6 +1,6 @@
 #include "../include/cpu.h"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 // Helper function to cleanly slice bits out of the 16-bit instruction
 static uint16_t extractBits(uint16_t instr, int pos, int len) {
@@ -58,9 +58,10 @@ void CPU::executeCurrentInst() {
     uint16_t val = m_Registers[srcReg];
     // Only print the character if it's in the printable range (32-126)
     if (val >= 32 && val <= 126) {
-        std::cout << "stdout: " << val << " ('" << static_cast<char>(val) << "')\n";
+      std::cout << "stdout: " << val << " ('" << static_cast<char>(val)
+                << "')\n";
     } else {
-        std::cout << "stdout: "<< val << " (ctrl char)\n";
+      std::cout << "stdout: " << val << " (ctrl char)\n";
     }
     break;
   }
@@ -71,8 +72,8 @@ void CPU::executeCurrentInst() {
     break;
   default:
     std::cout << std::hex << std::setfill('0')
-              << "HARDWARE FAULT: Unhandled Opcode 0x" << std::setw(4) << opCodeVal
-              << std::endl;
+              << "HARDWARE FAULT: Unhandled Opcode 0x" << std::setw(4)
+              << opCodeVal << std::endl;
     m_Registers[ISA::PC]--;
     break;
   }
@@ -143,55 +144,52 @@ void CPU::handle_OP_HALT() {
 }
 
 const std::string _print_line = "===============================";
-void print_line() {
-	std::cout << _print_line << std::endl; 
-}
+void print_line() { std::cout << _print_line << std::endl; }
 
 void print_section_line() {
-	std::cout << _print_line << _print_line << std::endl;
+  std::cout << _print_line << _print_line << std::endl;
 }
 
 void CPU::printState() {
-	std::cout << std::endl;
-	print_section_line();
-	this->printClockTime();
-	print_section_line();
-	this->printSpecialRegisters();
-	print_section_line();
-	this->printFlags();
-	print_section_line();
-	this->printGeneralRegisters();
-	print_section_line();
-	std::cout << std::endl;
+  std::cout << std::endl;
+  print_section_line();
+  this->printClockTime();
+  print_section_line();
+  this->printSpecialRegisters();
+  print_section_line();
+  this->printFlags();
+  print_section_line();
+  this->printGeneralRegisters();
+  print_section_line();
+  std::cout << std::endl;
 }
 
 void CPU::printClockTime() {
-	std::cout << "Clock Step" << std::endl;
-	std::cout << this->m_Clock.getTime() << std::endl;
+  std::cout << "Clock Step" << std::endl;
+  std::cout << this->m_Clock.getTime() << std::endl;
 }
 
 void CPU::printSpecialRegisters() {
-	std::cout << "Special Registers" << std::endl;
-	std::cout << std::hex << std::setfill('0')
-						<< "PC: 0x" << std::setw(4) << m_Registers[ISA::PC]
-						<< " | IR: 0x" << std::setw(4) << m_Registers[ISA::IR]
-						<< std::dec << std::endl;
+  std::cout << "Special Registers" << std::endl;
+  std::cout << std::hex << std::setfill('0') << "PC: 0x" << std::setw(4)
+            << m_Registers[ISA::PC] << " | IR: 0x" << std::setw(4)
+            << m_Registers[ISA::IR] << std::dec << std::endl;
 }
 
 void CPU::printFlags() {
-	std::cout << "Flags Status" << std::endl;
-	std::cout << "Z-Flag: " << m_Flags[ISA::ZERO_FLAG] << std::endl;
+  std::cout << "Flags Status" << std::endl;
+  std::cout << "Z-Flag: " << m_Flags[ISA::ZERO_FLAG] << std::endl;
 }
 
 void CPU::printGeneralRegisters() {
-	std::cout << "General Registers" << std::endl;
-	const uint REGISTERS_PER_LINE = 4;
-	for (int i = ISA::R0; i <= ISA::R15; i++) {
-		if (i > 0 && i % REGISTERS_PER_LINE == 0) {
-			std::cout << std::endl;
-		}
-		std::cout << std::hex << std::setfill('0')
-							<< "R" << i << ": 0x" << std::setw(4) << m_Registers[i] << " ";
-	}
-	std::cout << std::dec << std::endl;
+  std::cout << "General Registers" << std::endl;
+  const uint REGISTERS_PER_LINE = 4;
+  for (int i = ISA::R0; i <= ISA::R15; i++) {
+    if (i > 0 && i % REGISTERS_PER_LINE == 0) {
+      std::cout << std::endl;
+    }
+    std::cout << std::hex << std::setfill('0') << "R" << i << ": 0x"
+              << std::setw(4) << m_Registers[i] << " ";
+  }
+  std::cout << std::dec << std::endl;
 }

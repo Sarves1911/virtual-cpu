@@ -3,8 +3,8 @@
 #include "../include/cpu.h"
 #include "../include/memory.h"
 #include <fstream>
-#include <iostream>
 #include <getopt.h>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
   bool verbose = false;
