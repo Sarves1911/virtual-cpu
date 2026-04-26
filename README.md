@@ -5,7 +5,7 @@
 ### Part1
 - execute `make run-fibo` for fibonacci sequence
 - execute `make run-helloworld` for hello world 
-- execute `make run-timer` for timer
+- execute `make run-timer` for timer program executed in verbose mode (prints out the state of CPU)
 
 
 ## For The Team

@@ -45,7 +45,8 @@ run-fibo: build
 run-helloworld: build
 	@./$(ASM_TARGET) ./assembly-files/helloWorld.asm && ./$(TARGET)
 
+# running run-timer with verbose mode
 run-timer: build
-	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET)
+	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET) -v
 
 .PHONY: build test clean all format

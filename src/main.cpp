@@ -4,8 +4,16 @@
 #include "../include/memory.h"
 #include <fstream>
 #include <iostream>
+#include <getopt.h>
 
-int main() {
+int main(int argc, char *argv[]) {
+  bool verbose = false;
+  int opt;
+  while ((opt = getopt(argc, argv, "v")) != -1) {
+    if (opt == 'v')
+      verbose = true;
+  }
+
   MemoryManager ram;
   ALU alu;
   Clock systemClock;
@@ -30,6 +38,8 @@ int main() {
   // Increased to 200 cycles to allow longer programs to run
   for (int i = 0; i < 200; i++) {
     cpu.cycle();
+    if (verbose)
+      cpu.printState();
     // Kill switch: Stop the clock if the Instruction Register hits HALT
     // (0x9000)
     if (cpu.registers()[ISA::IR] == 0x9000)
