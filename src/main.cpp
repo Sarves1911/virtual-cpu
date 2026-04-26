@@ -5,13 +5,25 @@
 #include <fstream>
 #include <getopt.h>
 #include <iostream>
+#include <string>
+
+void printDebugMenu() {
+  std::cout << "help menu: \n n - next instruction, 1 - print cpu state, 2 - "
+               "memory dump"
+            << std::endl;
+}
 
 int main(int argc, char *argv[]) {
   bool verbose = false;
+  bool debugger = false;
   int opt;
-  while ((opt = getopt(argc, argv, "v")) != -1) {
-    if (opt == 'v')
+  while ((opt = getopt(argc, argv, "vd")) != -1) {
+    if (opt == 'v') {
       verbose = true;
+    }
+    if (opt == 'd') {
+      debugger = true;
+    }
   }
 
   MemoryManager ram;
@@ -35,15 +47,36 @@ int main(int argc, char *argv[]) {
 
   std::cout << "\n--- CPU BOOT SEQUENCE INITIATED ---\n";
 
-  // Increased to 200 cycles to allow longer programs to run
-  for (int i = 0; i < 200; i++) {
-    cpu.cycle();
-    if (verbose)
-      cpu.printState();
-    // Kill switch: Stop the clock if the Instruction Register hits HALT
-    // (0x9000)
-    if (cpu.registers()[ISA::IR] == 0x9000)
-      break;
+  if (debugger) {
+    std::string line;
+    while (cpu.checkHalt()) {
+      std::cout << "> ";
+      if (!std::getline(std::cin, line))
+        break;
+      if (line.empty()) {
+        printDebugMenu();
+        continue;
+      }
+      char command = line[0];
+      switch (command) {
+      case 'n':
+        cpu.cycle();
+        break;
+      case '1':
+        cpu.printState();
+        break;
+      default:
+        printDebugMenu();
+      }
+    }
+  } else {
+    int MAX_CYCLE = 200;
+    int cycle = 0;
+    while (cycle++ < MAX_CYCLE && cpu.checkHalt()) {
+      cpu.cycle();
+      if (verbose)
+        cpu.printState();
+    }
   }
 
   std::cout << "\n--- CPU SHUTDOWN ---\n";

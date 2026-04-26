@@ -79,6 +79,8 @@ void CPU::executeCurrentInst() {
   }
 }
 
+bool CPU::checkHalt() { return m_Registers[ISA::IR] != (ISA::OP_HALT << 12); }
+
 void CPU::handle_OP_LOAD(uint16_t instr) {
   uint16_t destReg = extractBits(instr, 8, 4);
   uint16_t sourceReg = extractBits(instr, 4, 4);
