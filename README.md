@@ -5,8 +5,12 @@
 ### Part1
 - execute `make run-fibo` for fibonacci sequence
 - execute `make run-helloworld` for hello world 
-- execute `make run-timer` for timer program executed in verbose mode (prints out the state of CPU)
+- execute `make run-timer` for a quick loop demo
+- execute `make run-timer-verbose` for timer program executed in verbose mode (prints out the state of CPU)
 
+
+### Part2
+- execute `make debug-helloworld` for a demo of the debugger
 
 ## For The Team
 

@@ -8,9 +8,12 @@
 #include <string>
 
 void printDebugMenu() {
-  std::cout << "help menu: \n n - next instruction, 1 - print cpu state, 2 - "
+  std::cout << "-------------------------------------------------" << std::endl;
+  std::cout << "help menu: \n q - quit, n - next instruction, 1 - print cpu "
+               "state, 2 - "
                "memory dump"
             << std::endl;
+  std::cout << "-------------------------------------------------" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -48,6 +51,8 @@ int main(int argc, char *argv[]) {
   std::cout << "\n--- CPU BOOT SEQUENCE INITIATED ---\n";
 
   if (debugger) {
+    std::cout << "\n -- ENTERING DEBUG MODE -- \n";
+    printDebugMenu();
     std::string line;
     while (cpu.checkHalt()) {
       std::cout << "> ";
@@ -65,14 +70,21 @@ int main(int argc, char *argv[]) {
       case '1':
         cpu.printState();
         break;
+      case '2':
+        cpu.memoryDump();
+        break;
+      case 'q':
+        return 0;
       default:
         printDebugMenu();
       }
     }
   } else {
-    int MAX_CYCLE = 200;
-    int cycle = 0;
-    while (cycle++ < MAX_CYCLE && cpu.checkHalt()) {
+    int MAX_ITER = 200;
+    int curr_iter = 0;
+    if (verbose)
+      cpu.printState();
+    while (curr_iter++ < MAX_ITER && cpu.checkHalt()) {
       cpu.cycle();
       if (verbose)
         cpu.printState();

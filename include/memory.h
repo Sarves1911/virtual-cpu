@@ -7,6 +7,7 @@ public:
   uint16_t read(uint16_t addr);
   void write(uint16_t addr, uint16_t value);
   void reset();
+  void memoryDump();
 
 private:
   std::array<uint16_t, ISA::MAX_MEM_SIZE> _Data;

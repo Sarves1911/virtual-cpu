@@ -152,6 +152,15 @@ void print_section_line() {
   std::cout << _print_line << _print_line << std::endl;
 }
 
+void CPU::memoryDump() {
+  std::cout << std::endl;
+  print_section_line();
+  std::cout << "Memory Dump" << std::endl;
+  m_MemoryManager.memoryDump();
+  print_section_line();
+  std::cout << std::endl;
+}
+
 void CPU::printState() {
   std::cout << std::endl;
   print_section_line();

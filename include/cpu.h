@@ -26,6 +26,7 @@ public:
   void printFlags();
   void printSpecialRegisters();
   void printGeneralRegisters();
+  void memoryDump();
 
   bool checkHalt();
   std::array<uint16_t, ISA::REG_COUNT> &registers() { return m_Registers; }
