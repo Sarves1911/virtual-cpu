@@ -1,5 +1,9 @@
 # VIRTUAL CPU
 
+## Introduction
+
+This project is a C++ implementation of a software CPU running our custom ISA.
+
 ## For The Professor
 
 ### Part1
