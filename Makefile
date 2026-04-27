@@ -1,4 +1,4 @@
-CXX = g++
+CXX = clang++
 CXXFLAGS = -Wall -Wextra -std=c++17 -I include
 TARGET = build/virtual-cpu
 TEST_TARGET = build/virtual-cpu-tests
