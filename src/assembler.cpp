@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   }
 
   // --- PASS 2: Generate Machine Code ---
-  std::ofstream outfile("machine_code.bin", std::ios::binary);
+  std::ofstream outfile("./build/machine_code.bin", std::ios::binary);
   uint16_t instructionsWritten = 0;
 
   for (const auto &tokens : parsedLines) {

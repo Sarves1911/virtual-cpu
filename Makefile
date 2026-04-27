@@ -37,7 +37,7 @@ clean:
 	rm -f $(TARGET)
 	rm -f $(ASM_TARGET)
 	rm -rf $(TEST_TARGET)
-	rm -f machine_code.bin
+	rm -f ./build/machine_code.bin
 
 run-fibo: build
 	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET)
@@ -52,7 +52,7 @@ run-timer: build
 run-timer-verbose: build
 	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET) -v
 
-debug-helloworld: build
-	@./$(ASM_TARGET) ./assembly-files/helloWorld.asm && ./$(TARGET) -d
+debug-fibo : build
+	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET) -d
 
 .PHONY: build test clean all format
