@@ -4,24 +4,23 @@ TARGET = build/virtual-cpu
 TEST_TARGET = build/virtual-cpu-tests
 ASM_TARGET = build/assembler
 
-# Smartly find the assembler whether they named the folder boiler-plate or assembly-files
-ASM_SRC = $(wildcard boiler-plate/assembler.cpp src/assembler.cpp assembly-files/assembler.cpp)
+ASM_SRC = $(wildcard src/assembler.cpp)
 
 # Safely grab CPU files without grabbing the assembler
 ALL_SRC  = $(wildcard src/*.cpp)
-SRC      = $(filter-out src/assembler.cpp, $(ALL_SRC))
+CPU_SRC      = $(filter-out src/assembler.cpp, $(ALL_SRC))
 
 TEST_SRC = $(wildcard test/*.cpp)
-CORE_LOGIC = $(filter-out src/main.cpp, $(SRC))
+CORE_LOGIC = $(filter-out src/main.cpp, $(CPU_SRC))
 
 FORMATTER = clang-format
 FORMAT_FLAGS = -i -style=file
 
 all: build test format
 
-build: $(SRC)
+build: $(ALL_SRC)
 	@mkdir -p build
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(CPU_SRC)
 	$(CXX) $(CXXFLAGS) -o $(ASM_TARGET) $(ASM_SRC)
 
 test: $(ALL_FILES)
@@ -39,6 +38,11 @@ clean:
 	rm -rf $(TEST_TARGET)
 	rm -f ./build/machine_code.bin
 
+.PHONY: build test clean all format
+
+# DEMO makefile directives
+# These should match with what is listed in README.md for demo.
+
 run-fibo: build
 	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET)
 
@@ -55,4 +59,3 @@ run-timer-verbose: build
 debug-fibo : build
 	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET) -d
 
-.PHONY: build test clean all format
