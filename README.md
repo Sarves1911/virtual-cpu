@@ -14,7 +14,7 @@ This project is a C++ implementation of a software CPU running our custom ISA.
 
 
 ### Part2
-- execute `make debug-helloworld` for a demo of the debugger
+- execute `make debug-fibo` for a demo of the debugger
 
 ## For The Team
 
