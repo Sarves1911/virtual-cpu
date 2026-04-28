@@ -16,8 +16,7 @@ public:
   void Reset() {
     m_Registers.fill(0);
     m_Flags.fill(0);
-    m_Registers[ISA::SP] =
-        ISA::MAX_MEM_ADDR; // reset stack pointer to max address
+    m_Registers[ISA::SP] = ISA::MAX_MEM_ADDR; // reset stack pointer to max address
     m_MemoryManager.reset();
   }
   void cycle();
