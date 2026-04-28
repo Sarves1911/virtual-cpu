@@ -22,10 +22,14 @@ int main(int argc, char *argv[]) {
   }
 
   std::unordered_map<std::string, uint16_t> opcodes = {
-      {"NOOP", ISA::OP_NOOP},   {"LDI", ISA::OP_LDI},    {"MOV", ISA::OP_MOV},
-      {"ADD", ISA::OP_ADD},     {"SUB", ISA::OP_SUB},    {"LOAD", ISA::OP_LOAD},
-      {"STORE", ISA::OP_STORE}, {"JMP", ISA::OP_JMP},    {"JZ", ISA::OP_JZ},
-      {"HALT", ISA::OP_HALT},   {"PRINT", ISA::OP_PRINT}};
+      {"NOOP", ISA::OP_NOOP},   {"LDI", ISA::OP_LDI},
+      {"MOV", ISA::OP_MOV},     {"ADD", ISA::OP_ADD},
+      {"SUB", ISA::OP_SUB},     {"LOAD", ISA::OP_LOAD},
+      {"STORE", ISA::OP_STORE}, {"JMP", ISA::OP_JMP},
+      {"JZ", ISA::OP_JZ},       {"PUSH", ISA::OP_PUSH},
+      {"POP", ISA::OP_POP},     {"CALL", ISA::OP_CALL},
+      {"RET", ISA::OP_RET},     {"HALT", ISA::OP_HALT},
+      {"PRINT", ISA::OP_PRINT}};
 
   std::unordered_map<std::string, uint16_t> regs;
   for (int i = 0; i < 16; i++)
@@ -102,6 +106,22 @@ int main(int argc, char *argv[]) {
         addr = std::stoi(tokens[1]);
       }
       instr = (op << 12) | (addr & 0xFF);
+    } else if (tokens[0] == "PUSH") {
+      uint16_t src = regs[tokens[1]];
+      instr = (op << 12) | (src << 8);
+    } else if (tokens[0] == "POP") {
+      uint16_t dest = regs[tokens[1]];
+      instr = (op << 12) | (dest << 8);
+    } else if (tokens[0] == "CALL") {
+      uint16_t addr;
+      if (labels.count(tokens[1]))
+        addr = labels[tokens[1]];
+      else
+        addr = std::stoi(tokens[1]);
+
+      instr = (op << 12) | (addr & 0xFF);
+    } else if (tokens[0] == "RET") {
+      instr = (op << 12);
     } else if (tokens[0] == "HALT" || tokens[0] == "NOOP") {
       instr = (op << 12);
     }
