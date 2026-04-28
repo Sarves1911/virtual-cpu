@@ -38,6 +38,10 @@ enum Registers {
   // The current instruction being executed atm
   IR,
 
+  // Stack Pointer
+  // Points to top of the stack. Will start at 0xFF and grow downward.
+  SP,
+
   // Number of Register Counter
   // NOT A REGISTER!!!
   REG_COUNT,
@@ -101,6 +105,24 @@ enum Opcode {
 
   // [1010] [0000] [4 bit source reg] [0000]
   OP_PRINT = 0xA,
+
+  // Push register value onto stack
+  // [1011] [4 bit source reg] [0000 0000]
+  OP_PUSH = 0xB,
+
+  // Pop stack value into register
+  // [1100] [4 bit dest reg] [0000 0000]
+  OP_POP = 0xC,
+
+  // Call function at immediate address
+  // Pushes current PC, then jumps to address
+  // [1101] [0000] [8 bit immediate]
+  OP_CALL = 0xD,
+
+  // Return from function
+  // Pops return address into PC
+  // [1110] [0000 0000 0000]
+  OP_RET = 0xE,
 
 };
 

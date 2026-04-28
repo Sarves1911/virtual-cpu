@@ -16,8 +16,7 @@ public:
   void Reset() {
     m_Registers.fill(0);
     m_Flags.fill(0);
-    m_Registers[ISA::PC] = 0;
-    m_Registers[ISA::IR] = 0;
+    m_Registers[ISA::SP] = ISA::MAX_MEM_ADDR; // reset stack pointer to max address
     m_MemoryManager.reset();
   }
   void cycle();
@@ -31,6 +30,9 @@ public:
   bool checkHalt();
   std::array<uint16_t, ISA::REG_COUNT> &registers() { return m_Registers; }
   std::array<uint16_t, ISA::FLAG_COUNT> &flags() { return m_Flags; }
+
+  void push(uint16_t value);
+  uint16_t pop();
 
 private:
   MemoryManager &m_MemoryManager;
@@ -49,5 +51,9 @@ private:
   void handle_OP_MOV(uint16_t instr);
   void handle_OP_JMP(uint16_t instr);
   void handle_OP_JZ(uint16_t instr);
+  void handle_OP_PUSH(uint16_t instr);
+  void handle_OP_POP(uint16_t instr);
+  void handle_OP_CALL(uint16_t instr);
+  void handle_OP_RET();
   void handle_OP_HALT();
 };

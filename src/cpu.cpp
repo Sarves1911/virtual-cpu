@@ -53,6 +53,18 @@ void CPU::executeCurrentInst() {
   case ISA::OP_JZ:
     handle_OP_JZ(instr);
     break;
+  case ISA::OP_PUSH:
+    handle_OP_PUSH(instr);
+    break;
+  case ISA::OP_POP:
+    handle_OP_POP(instr);
+    break;
+  case ISA::OP_CALL:
+    handle_OP_CALL(instr);
+    break;
+  case ISA::OP_RET:
+    handle_OP_RET();
+    break;
   case ISA::OP_PRINT: {
     uint16_t srcReg = extractBits(instr, 8, 4);
     uint16_t val = m_Registers[srcReg];
@@ -80,6 +92,26 @@ void CPU::executeCurrentInst() {
 }
 
 bool CPU::checkHalt() { return m_Registers[ISA::IR] != (ISA::OP_HALT << 12); }
+
+void CPU::push(uint16_t value) {
+  uint16_t sp = m_Registers[ISA::SP];
+
+  sp--;
+  m_MemoryManager.write(sp, value);
+
+  m_Registers[ISA::SP] = sp;
+}
+
+uint16_t CPU::pop() {
+  uint16_t sp = m_Registers[ISA::SP];
+
+  uint16_t value = m_MemoryManager.read(sp);
+
+  sp++;
+  m_Registers[ISA::SP] = sp;
+
+  return value;
+}
 
 void CPU::handle_OP_LOAD(uint16_t instr) {
   uint16_t destReg = extractBits(instr, 8, 4);
@@ -140,6 +172,26 @@ void CPU::handle_OP_JZ(uint16_t instr) {
   }
 }
 
+void CPU::handle_OP_PUSH(uint16_t instr) {
+  uint16_t srcReg = extractBits(instr, 8, 4);
+  push(m_Registers[srcReg]);
+}
+
+void CPU::handle_OP_POP(uint16_t instr) {
+  uint16_t destReg = extractBits(instr, 8, 4);
+  m_Registers[destReg] = pop();
+}
+
+void CPU::handle_OP_CALL(uint16_t instr) {
+  uint16_t callAddress = extractBits(instr, 0, 8);
+
+  // PC already points to next isntruction because fetch incremented it
+  push(m_Registers[ISA::PC]);
+  m_Registers[ISA::PC] = callAddress;
+}
+
+void CPU::handle_OP_RET() { m_Registers[ISA::PC] = pop(); }
+
 void CPU::handle_OP_HALT() {
   std::cout << "\nCPU EXECUTED HALT INSTRUCTION.\n" << std::endl;
   m_Registers[ISA::PC]--;
@@ -184,7 +236,8 @@ void CPU::printSpecialRegisters() {
   std::cout << "Special Registers" << std::endl;
   std::cout << std::hex << std::setfill('0') << "PC: 0x" << std::setw(4)
             << m_Registers[ISA::PC] << " | IR: 0x" << std::setw(4)
-            << m_Registers[ISA::IR] << std::dec << std::endl;
+            << m_Registers[ISA::IR] << " | SP: 0x" << std::setw(4)
+            << m_Registers[ISA::SP] << std::dec << std::endl;
 }
 
 void CPU::printFlags() {
