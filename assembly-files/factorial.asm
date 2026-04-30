@@ -3,13 +3,16 @@
 // main
 LDI R0 5        // R0 = n
 CALL FACT       // R1 = factorial(R0)
-PRINT R1        // Expected: 120
+PRINT R1        // Print final result
 HALT
 
 // FACT(n)
 // Input: R0 = n
 // Output: R1 = factorial(n)
 FACT:
+
+PRINT R0        // print current n
+
 LDI R2 1
 SUB R3 R0 R2    // R3 = n - 1
 JZ BASE_CASE    // if n - 1 == 0, return 1
@@ -33,8 +36,10 @@ JMP MULT_LOOP
 
 MULT_DONE:
 MOV R1 R6
+PRINT R1        // print intermediate result
 RET 
 
 BASE_CASE:
 LDI R1 1
+PRINT R1        // print base case result
 RET
