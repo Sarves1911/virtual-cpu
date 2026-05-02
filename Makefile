@@ -56,6 +56,12 @@ run-timer: build
 run-timer-verbose: build
 	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET) -v
 
+run-factorial: build
+	@./$(ASM_TARGET) ./assembly-files/factorial.asm && ./$(TARGET)
+
 debug-fibo : build
 	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET) -d
+
+debug-factorial: build
+	@./$(ASM_TARGET) ./assembly-files/factorial.asm && ./$(TARGET) -d
 
