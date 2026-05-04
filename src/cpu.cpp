@@ -68,12 +68,17 @@ void CPU::executeCurrentInst() {
   case ISA::OP_PRINT: {
     uint16_t srcReg = extractBits(instr, 8, 4);
     uint16_t val = m_Registers[srcReg];
+
+    std::cout << "stdout: R" << std::hex << srcReg << std::dec << " = " << val;
+    if(m_ShowStack){
+      uint16_t sp = m_Registers[ISA::SP];
+      std::cout << " | SP = 0x" << std::hex << sp << std::dec;
+    }
     // Only print the character if it's in the printable range (32-126)
     if (val >= 32 && val <= 126) {
-      std::cout << "stdout: " << val << " ('" << static_cast<char>(val)
-                << "')\n";
+      std::cout << " ('" << static_cast<char>(val) << "')\n";
     } else {
-      std::cout << "stdout: " << val << " (ctrl char)\n";
+      std::cout << " (ctrl char)\n";
     }
     break;
   }
