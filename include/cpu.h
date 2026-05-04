@@ -34,13 +34,15 @@ public:
   void push(uint16_t value);
   uint16_t pop();
 
+  void setShowStack(bool s) {m_ShowStack = s; }
+
 private:
   MemoryManager &m_MemoryManager;
   ALU &m_ALU;
   Clock &m_Clock;
   std::array<uint16_t, ISA::REG_COUNT> m_Registers;
   std::array<uint16_t, ISA::FLAG_COUNT> m_Flags;
-
+  bool m_ShowStack = false;
   void fetchNextInst();
   void executeCurrentInst();
   void handle_OP_LOAD(uint16_t instr);

@@ -70,6 +70,10 @@ void CPU::executeCurrentInst() {
     uint16_t val = m_Registers[srcReg];
 
     std::cout << "stdout: R" << std::hex << srcReg << std::dec << " = " << val;
+    if(m_ShowStack){
+      uint16_t sp = m_Registers[ISA::SP];
+      std::cout << " | SP = 0x" << std::hex << sp << std::dec;
+    }
     // Only print the character if it's in the printable range (32-126)
     if (val >= 32 && val <= 126) {
       std::cout << " ('" << static_cast<char>(val) << "')\n";
