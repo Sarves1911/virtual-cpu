@@ -52,12 +52,13 @@ run-helloworld: build
 run-timer: build
 	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET)
 
+
 # running run-timer with verbose mode
 run-timer-verbose: build
 	@./$(ASM_TARGET) ./assembly-files/timer.asm && ./$(TARGET) -v
 
 run-factorial: build
-	@./$(ASM_TARGET) ./assembly-files/factorial.asm && ./$(TARGET)
+	@./$(ASM_TARGET) ./assembly-files/factorial.asm && ./$(TARGET) -s
 
 debug-fibo : build
 	@./$(ASM_TARGET) ./assembly-files/fibonacci.asm && ./$(TARGET) -d
