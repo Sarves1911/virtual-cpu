@@ -11,10 +11,15 @@ This project is a C++ implementation of a software CPU running our custom ISA.
 - execute `make run-helloworld` for hello world 
 - execute `make run-timer` for a quick loop demo
 - execute `make run-timer-verbose` for timer program executed in verbose mode (prints out the state of CPU)
-
+- execute `make debug-fibo` for a demo of the debugger
 
 ### Part2
-- execute `make debug-fibo` for a demo of the debugger
+- execute `make run-factorial` for a quick factorial demo
+- execute  `make debug-factorial` for a demo of the factorial debugger
+
+### Demos
+- located in the /demo directory of the repo
+- Demo1 -> fibonacci, demo2 -> factorial
 
 ## For The Team
 
